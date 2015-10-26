@@ -41,7 +41,7 @@ public class CoordinateTest {
 		
 		boolean thrown = false;
 		try {
-		location = new Coordinate(0, Double.NaN);
+			location = new Coordinate(0, Double.NaN);
 		} catch (IllegalArgumentException e) {
 			thrown = true;
 		}
@@ -49,7 +49,7 @@ public class CoordinateTest {
 		
 		thrown = false;
 		try {
-		location = new Coordinate(Double.NaN, 0);
+			location = new Coordinate(Double.NaN, 0);
 		} catch (IllegalArgumentException e) {
 			thrown = true;
 		}
@@ -57,7 +57,7 @@ public class CoordinateTest {
 		
 		thrown = false;
 		try {
-		location = new Coordinate(0, -181);
+			location = new Coordinate(0, -181);
 		} catch (IllegalArgumentException e) {
 			thrown = true;
 		}
@@ -65,7 +65,7 @@ public class CoordinateTest {
 		
 		thrown = false;
 		try {
-		location = new Coordinate(0, 181);
+			location = new Coordinate(0, 181);
 		} catch (IllegalArgumentException e) {
 			thrown = true;
 		}
@@ -73,7 +73,7 @@ public class CoordinateTest {
 		
 		thrown = false;
 		try {
-		location = new Coordinate(91, 0);
+			location = new Coordinate(91, 0);
 		} catch (IllegalArgumentException e) {
 			thrown = true;
 		}
@@ -81,7 +81,7 @@ public class CoordinateTest {
 		
 		thrown = false;
 		try {
-		location = new Coordinate(-91, 0);
+			location = new Coordinate(-91, 0);
 		} catch (IllegalArgumentException e) {
 			thrown = true;
 		}
@@ -89,7 +89,7 @@ public class CoordinateTest {
 		
 		thrown = false;
 		try {
-		location = new Coordinate(91, -181);
+			location = new Coordinate(91, -181);
 		} catch (IllegalArgumentException e) {
 			thrown = true;
 		}
@@ -97,7 +97,7 @@ public class CoordinateTest {
 		
 		thrown = false;
 		try {
-		location = new Coordinate(91, Double.NaN);
+			location = new Coordinate(91, Double.NaN);
 		} catch (IllegalArgumentException e) {
 			thrown = true;
 		}
@@ -119,7 +119,7 @@ public class CoordinateTest {
 	public void testParameters() {
 		boolean thrown = false;
 		try {
-		location.setLatitude(Double.NaN);
+			location.setLatitude(Double.NaN);
 		} catch (IllegalArgumentException e) {
 			thrown = true;
 		}
@@ -127,7 +127,7 @@ public class CoordinateTest {
 		
 		thrown = false;
 		try {
-		location.setLongitude(Double.NaN);
+			location.setLongitude(Double.NaN);
 		} catch (IllegalArgumentException e) {
 			thrown = true;
 		}
@@ -135,7 +135,7 @@ public class CoordinateTest {
 		
 		thrown = false;
 		try {
-		location.setCoordinate(new Coordinate(0, Double.NaN));
+			location.setCoordinate(new Coordinate(0, Double.NaN));
 		} catch (IllegalArgumentException e) {
 			thrown = true;
 		}
@@ -143,7 +143,7 @@ public class CoordinateTest {
 		
 		thrown = false;
 		try {
-		location.setCoordinate(null);
+			location.setCoordinate(null);
 		} catch (NullPointerException e) {
 			thrown = true;
 		}
@@ -151,7 +151,7 @@ public class CoordinateTest {
 		
 		thrown = false;
 		try {
-		location.setCoordinate(new Coordinate(Double.NaN, 0));
+			location.setCoordinate(new Coordinate(Double.NaN, 0));
 		} catch (IllegalArgumentException e) {
 			thrown = true;
 		}
@@ -159,7 +159,7 @@ public class CoordinateTest {
 		
 		thrown = false;
 		try {
-		location.setCoordinate(new Coordinate(Double.NaN, Double.NaN));
+			location.setCoordinate(new Coordinate(Double.NaN, Double.NaN));
 		} catch (IllegalArgumentException e) {
 			thrown = true;
 		}
@@ -307,7 +307,7 @@ public class CoordinateTest {
 		
 		boolean thrown = false;
 		try {
-		location.getDistance(null);
+			location.getDistance(null);
 		} catch (NullPointerException e) {
 			thrown = true;
 		}
@@ -315,7 +315,7 @@ public class CoordinateTest {
 		
 		thrown = false;
 		try {
-		location.getLatitudinalDistance(null);
+			location.getLatitudinalDistance(null);
 		} catch (NullPointerException e) {
 			thrown = true;
 		}
@@ -323,8 +323,60 @@ public class CoordinateTest {
 		
 		thrown = false;
 		try {
-		location.getLongitudinalDistance(null);
+			location.getLongitudinalDistance(null);
 		} catch (NullPointerException e) {
+			thrown = true;
+		}
+		assertTrue(thrown);
+		
+		Coordinate distanceCoor = location.getDistance(location2);
+		assertEquals(180, distanceCoor.getLatitude(), delta);
+		assertEquals(360, distanceCoor.getLongitude(), delta);
+		
+		thrown = false;
+		try {
+			distanceCoor.getDistance(location);
+		} catch (IllegalArgumentException e) {
+			thrown = true;
+		}
+		assertTrue(thrown);
+		
+		thrown = false;
+		try {
+			location.getDistance(distanceCoor);
+		} catch (IllegalArgumentException e) {
+			thrown = true;
+		}
+		assertTrue(thrown);
+		
+		thrown = false;
+		try {
+			distanceCoor.getLatitudinalDistance(location);
+		} catch (IllegalArgumentException e) {
+			thrown = true;
+		}
+		assertTrue(thrown);
+		
+		thrown = false;
+		try {
+			location.getLatitudinalDistance(distanceCoor);
+		} catch (IllegalArgumentException e) {
+			thrown = true;
+		}
+		assertTrue(thrown);
+		
+		thrown = false;
+		try {
+			distanceCoor.getLongitudinalDistance(location);
+		} catch (IllegalArgumentException e) {
+			thrown = true;
+		}
+		assertTrue(thrown);
+		
+		thrown = false;
+		try {
+			location.getLongitudinalDistance(distanceCoor);
+		} catch (IllegalArgumentException e) {
 			thrown = true;
 		}
 		assertTrue(thrown);

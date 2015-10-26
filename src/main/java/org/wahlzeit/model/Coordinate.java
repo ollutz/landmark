@@ -120,12 +120,6 @@ public class Coordinate {
 	 * 
 	 */
 	public Coordinate getDistance(Coordinate coordinate2) throws IllegalArgumentException, NullPointerException {
-		if (coordinate2 == null) {
-			throw new NullPointerException();
-		}
-		if (distance == true || coordinate2.isDistance() == true) {
-			throw new IllegalArgumentException();
-		}
 		return new Coordinate(getLatitudinalDistance(coordinate2), getLongitudinalDistance(coordinate2), true);
 	}
 	
@@ -154,6 +148,4 @@ public class Coordinate {
 		}
 		return (Math.abs(longitude - coordinate2.getLongitude()));
 	}
-	
-
 }
