@@ -118,6 +118,11 @@ public class Photo extends DataObject {
 	protected long creationTime = System.currentTimeMillis();
 	
 	/**
+	 *
+	 */
+	protected Coordinate location;
+	
+	/**
 	 * The default type is jpg
 	 */
 	protected String ending = "jpg";
@@ -146,6 +151,15 @@ public class Photo extends DataObject {
 		id = myId;
 
 		incWriteCount();
+	}
+	
+	public void setLocation(Coordinate mycoordinate) {
+		location.setCoordinate(mycoordinate);
+		incWriteCount();
+	}
+	
+	public Coordinate getLocation() {
+		return location;
 	}
 
 	/**
