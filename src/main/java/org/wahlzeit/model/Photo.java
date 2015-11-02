@@ -120,7 +120,7 @@ public class Photo extends DataObject {
 	/**
 	 *
 	 */
-	protected Coordinate location;
+	protected Location location;
 	
 	/**
 	 * The default type is jpg
@@ -149,19 +149,23 @@ public class Photo extends DataObject {
 	 */
 	public Photo(PhotoId myId) {
 		id = myId;
+		incWriteCount();
+	}
 
-		incWriteCount();
-	}
-	
-	public void setLocation(Coordinate mycoordinate) {
-		location.setCoordinate(mycoordinate);
-		incWriteCount();
-	}
-	
-	public Coordinate getLocation() {
+	/**
+	 * @methodtype get
+	 */
+	public Location getLocation() {
 		return location;
 	}
 
+	/**
+	 * @methodtype set
+	 */
+	public void setImage(Location mylocation) {
+		location = mylocation;
+	}
+	
 	/**
 	 * @methodtype get
 	 */

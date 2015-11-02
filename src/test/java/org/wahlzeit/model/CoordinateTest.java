@@ -22,6 +22,7 @@ public class CoordinateTest {
 	private Coordinate location;
 	private Coordinate location2;
 	private static final double delta = 0.0001; 
+	private static final double delta2 = 1; 
 
 	@Before
 	public void initPhotoFilter() {
@@ -116,7 +117,7 @@ public class CoordinateTest {
 	}
 	
 	@Test
-	public void testParameters() {
+	public void testSetter() {
 		boolean thrown = false;
 		try {
 			location.setLatitude(Double.NaN);
@@ -263,120 +264,94 @@ public class CoordinateTest {
 	}
 	
 	@Test
-	public void testDistances() {
+	public void testgetLatitudinalDistance() {
+		location.setCoordinate(new Coordinate(0,0));
+		location2.setCoordinate(new Coordinate(45,90));
 		assertEquals(45, location.getLatitudinalDistance(location2), delta);
-		assertEquals(90, location.getLongitudinalDistance(location2), delta);
-		assertEquals(45, location.getDistance(location2).getLatitude(), delta);
-		assertEquals(90, location.getDistance(location2).getLongitude(), delta);
+		assertEquals(45, location2.getLatitudinalDistance(location), delta);
 		
 		location.setCoordinate(new Coordinate(45,90));
 		assertEquals(0, location.getLatitudinalDistance(location2), delta);
-		assertEquals(0, location.getLongitudinalDistance(location2), delta);
-		assertEquals(0, location.getDistance(location2).getLatitude(), delta);
-		assertEquals(0, location.getDistance(location2).getLongitude(), delta);
+		assertEquals(0, location2.getLatitudinalDistance(location), delta);
+		
+		location.setCoordinate(new Coordinate(-90,-180));
+		location2.setCoordinate(new Coordinate(89,179));
+		assertEquals(1, location.getLatitudinalDistance(location2), delta);
+		assertEquals(1, location2.getLatitudinalDistance(location), delta);
 		
 		location.setCoordinate(new Coordinate(-45,-90));
-		assertEquals(90, location.getLatitudinalDistance(location2), delta);
-		assertEquals(180, location.getLongitudinalDistance(location2), delta);
-		assertEquals(90, location.getDistance(location2).getLatitude(), delta);
-		assertEquals(180, location.getDistance(location2).getLongitude(), delta);
+		location2.setCoordinate(new Coordinate(50,100));
+		assertEquals(85, location.getLatitudinalDistance(location2), delta);
+		assertEquals(85, location2.getLatitudinalDistance(location), delta);
 		
-		location2.setCoordinate(new Coordinate(-45,-90));
+		location.setCoordinate(new Coordinate(-90,-180));
+		location2.setCoordinate(new Coordinate(90,180));
 		assertEquals(0, location.getLatitudinalDistance(location2), delta);
-		assertEquals(0, location.getLongitudinalDistance(location2), delta);
-		assertEquals(0, location.getDistance(location2).getLatitude(), delta);
-		assertEquals(0, location.getDistance(location2).getLongitude(), delta);
-		
-		location.setCoordinate(new Coordinate(45,90));
-		assertEquals(90, location.getLatitudinalDistance(location2), delta);
-		assertEquals(180, location.getLongitudinalDistance(location2), delta);
-		assertEquals(90, location.getDistance(location2).getLatitude(), delta);
-		assertEquals(180, location.getDistance(location2).getLongitude(), delta);
-		
-		location.setCoordinate(new Coordinate(90, 180));
-		location2.setCoordinate(new Coordinate(-90, -180));
-		assertEquals(180, location.getLatitudinalDistance(location2), delta);
-		assertEquals(360, location.getLongitudinalDistance(location2), delta);
-		assertEquals(180, location.getDistance(location2).getLatitude(), delta);
-		assertEquals(360, location.getDistance(location2).getLongitude(), delta);
-		
-		assertEquals(180, location2.getLatitudinalDistance(location), delta);
-		assertEquals(360, location2.getLongitudinalDistance(location), delta);
-		assertEquals(180, location2.getDistance(location).getLatitude(), delta);
-		assertEquals(360, location2.getDistance(location).getLongitude(), delta);
+		assertEquals(0, location2.getLatitudinalDistance(location), delta);
 		
 		boolean thrown = false;
-		try {
-			location.getDistance(null);
-		} catch (NullPointerException e) {
-			thrown = true;
-		}
-		assertTrue(thrown);
-		
-		thrown = false;
 		try {
 			location.getLatitudinalDistance(null);
 		} catch (NullPointerException e) {
 			thrown = true;
 		}
 		assertTrue(thrown);
+	}
+	
+	@Test
+	public void testgetLongitudinalDistance() {
+		location.setCoordinate(new Coordinate(0,0));
+		location2.setCoordinate(new Coordinate(45,90));
+		assertEquals(90, location.getLongitudinalDistance(location2), delta);
+		assertEquals(90, location2.getLongitudinalDistance(location), delta);
 		
-		thrown = false;
+		location.setCoordinate(new Coordinate(45,90));
+		assertEquals(0, location.getLongitudinalDistance(location2), delta);
+		assertEquals(0, location2.getLongitudinalDistance(location), delta);
+		
+		location.setCoordinate(new Coordinate(-90,-180));
+		location2.setCoordinate(new Coordinate(89,179));
+		assertEquals(1, location.getLongitudinalDistance(location2), delta);
+		assertEquals(1, location2.getLongitudinalDistance(location), delta);
+		
+		location.setCoordinate(new Coordinate(-45,-90));
+		location2.setCoordinate(new Coordinate(50,100));
+		assertEquals(170, location.getLongitudinalDistance(location2), delta);
+		assertEquals(170, location2.getLongitudinalDistance(location), delta);
+		
+		location.setCoordinate(new Coordinate(-90,-180));
+		location2.setCoordinate(new Coordinate(90,180));
+		assertEquals(0, location.getLongitudinalDistance(location2), delta);
+		assertEquals(0, location2.getLongitudinalDistance(location), delta);
+		
+		boolean thrown = false;
 		try {
 			location.getLongitudinalDistance(null);
 		} catch (NullPointerException e) {
 			thrown = true;
 		}
 		assertTrue(thrown);
+	}
+	
+	@Test
+	public void testgetDistance() {
+		location.setCoordinate(new Coordinate(52.517, 13.40)); //Berlin
+		location2.setCoordinate(new Coordinate(35.70, 139.767)); //Tokio
+		Coordinate location3 = new Coordinate(40.712778, -74.005833); //New York
 		
-		Coordinate distanceCoor = location.getDistance(location2);
-		assertEquals(180, distanceCoor.getLatitude(), delta);
-		assertEquals(360, distanceCoor.getLongitude(), delta);
+		assertEquals(8918, location.getDistance(location2), delta2);
+		assertEquals(8918, location2.getDistance(location), delta2);
+				
+		assertEquals(6385, location.getDistance(location3), delta2);
+		assertEquals(6385, location3.getDistance(location), delta2);
 		
-		thrown = false;
+		assertEquals(10844, location2.getDistance(location3), delta2);
+		assertEquals(10844, location3.getDistance(location2), delta2);
+		
+		boolean thrown = false;
 		try {
-			distanceCoor.getDistance(location);
-		} catch (IllegalArgumentException e) {
-			thrown = true;
-		}
-		assertTrue(thrown);
-		
-		thrown = false;
-		try {
-			location.getDistance(distanceCoor);
-		} catch (IllegalArgumentException e) {
-			thrown = true;
-		}
-		assertTrue(thrown);
-		
-		thrown = false;
-		try {
-			distanceCoor.getLatitudinalDistance(location);
-		} catch (IllegalArgumentException e) {
-			thrown = true;
-		}
-		assertTrue(thrown);
-		
-		thrown = false;
-		try {
-			location.getLatitudinalDistance(distanceCoor);
-		} catch (IllegalArgumentException e) {
-			thrown = true;
-		}
-		assertTrue(thrown);
-		
-		thrown = false;
-		try {
-			distanceCoor.getLongitudinalDistance(location);
-		} catch (IllegalArgumentException e) {
-			thrown = true;
-		}
-		assertTrue(thrown);
-		
-		thrown = false;
-		try {
-			location.getLongitudinalDistance(distanceCoor);
-		} catch (IllegalArgumentException e) {
+			location.getDistance(null);
+		} catch (NullPointerException e) {
 			thrown = true;
 		}
 		assertTrue(thrown);

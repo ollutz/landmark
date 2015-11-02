@@ -7,6 +7,7 @@ import org.wahlzeit.model.Administrator;
 import org.wahlzeit.model.Client;
 import org.wahlzeit.model.Globals;
 import org.wahlzeit.model.Guest;
+import org.wahlzeit.model.LandmarkPhoto;
 import org.wahlzeit.model.Moderator;
 import org.wahlzeit.model.Photo;
 import org.wahlzeit.model.PhotoCase;
@@ -26,6 +27,7 @@ public class OfyService {
 	 */
 	static {
 		factory().register(Photo.class);
+		factory().register(LandmarkPhoto.class);
 		factory().register(Globals.class);
 		factory().register(Tag.class);
 		factory().register(User.class);

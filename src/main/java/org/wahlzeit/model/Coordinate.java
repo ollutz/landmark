@@ -17,7 +17,7 @@ public class Coordinate {
 	 */
 	private double latitude;
 	private double longitude;
-	private boolean distance;
+	private static final double EARTHRADIUS = 6371;
 
 	/**
 	 * @methodtype constructor
@@ -25,7 +25,6 @@ public class Coordinate {
 	public Coordinate() {
 		latitude = 0;
 		longitude = 0;
-		distance = false;
 	}
 	
 	/**
@@ -40,35 +39,6 @@ public class Coordinate {
 		}
 		latitude = mylatitude;
 		longitude = mylongitude;
-		distance = false;
-	}
-	
-	/**
-	 * @methodtype constructor
-	 * 
-	 * This constructor is only used to create a Coordinate in method getDistance()
-	 * because latitude and longitude can be greater than 90/180!
-	 */
-	private Coordinate(double mylatitude, double mylongitude, boolean mydistance) throws IllegalArgumentException {
-		if (mylatitude > 180 || Double.isNaN(mylatitude)) {
-			throw new IllegalArgumentException();
-		}
-		if (mylongitude > 360 || Double.isNaN(mylongitude)) {
-			throw new IllegalArgumentException();
-		}
-		if (mydistance == false) {
-			throw new IllegalArgumentException();
-		}
-		latitude = mylatitude;
-		longitude = mylongitude;
-		distance = mydistance;
-	}
-	
-	/**
-	 * @methodtype get
-	 */
-	public double getLongitude() {
-		return longitude;
 	}
 	
 	/**
@@ -77,12 +47,22 @@ public class Coordinate {
 	public double getLatitude() {
 		return latitude;
 	}
+		
+	/**
+	 * @methodtype get
+	 */
+	public double getLongitude() {
+		return longitude;
+	}
 	
 	/**
-	 * 
+	 * @methodtype set
 	 */
-	public boolean isDistance() {
-		return distance;
+	public void setLatitude(double mylatitude) throws IllegalArgumentException {
+		if (mylatitude < -90 || mylatitude > 90 || Double.isNaN(mylatitude)) {
+			throw new IllegalArgumentException();
+		}
+		latitude = mylatitude;
 	}
 	
 	/**
@@ -107,45 +87,50 @@ public class Coordinate {
 	}
 	
 	/**
-	 * @methodtype set
-	 */
-	public void setLatitude(double mylatitude) throws IllegalArgumentException {
-		if (mylatitude < -90 || mylatitude > 90 || Double.isNaN(mylatitude)) {
-			throw new IllegalArgumentException();
-		}
-		latitude = mylatitude;
-	}
-	
-	/**
 	 * 
 	 */
-	public Coordinate getDistance(Coordinate coordinate2) throws IllegalArgumentException, NullPointerException {
-		return new Coordinate(getLatitudinalDistance(coordinate2), getLongitudinalDistance(coordinate2), true);
-	}
-	
-	/**
-	 * 
-	 */
-	public double getLatitudinalDistance(Coordinate coordinate2) throws IllegalArgumentException, NullPointerException {
+	public double getDistance(Coordinate coordinate2) throws NullPointerException {
 		if (coordinate2 == null) {
 			throw new NullPointerException();
 		}
-		if (distance == true || coordinate2.isDistance() == true) {
-			throw new IllegalArgumentException();
-		}
-		return (Math.abs(latitude - coordinate2.getLatitude()));
+		double phi1 = Math.toRadians(latitude);
+		double phi2 = Math.toRadians(coordinate2.getLatitude());
+		double deltaPhi = Math.toRadians(getLatitudinalDistance(coordinate2));
+		double deltaLambda = Math.toRadians(getLongitudinalDistance(coordinate2));		
+
+		double tmp = Math.sin(deltaPhi/2) * Math.sin(deltaPhi/2) + Math.cos(phi1) * Math.cos(phi2) * Math.sin(deltaLambda/2) * Math.sin(deltaLambda/2);
+		double angle = 2*Math.asin(Math.sqrt(tmp));
+		
+		return Math.abs(EARTHRADIUS*angle);
 	}
 	
 	/**
 	 * 
 	 */
-	public double getLongitudinalDistance(Coordinate coordinate2) throws IllegalArgumentException, NullPointerException {
+	public double getLatitudinalDistance(Coordinate coordinate2) throws NullPointerException {
 		if (coordinate2 == null) {
 			throw new NullPointerException();
 		}
-		if (distance == true || coordinate2.isDistance() == true) {
-			throw new IllegalArgumentException();
+		double tmp = Math.abs(latitude - coordinate2.getLatitude());
+		if (tmp <= 90) {
+			return tmp;
+		} else {
+			return (180 - tmp);
 		}
-		return (Math.abs(longitude - coordinate2.getLongitude()));
+	}
+	
+	/**
+	 * 
+	 */
+	public double getLongitudinalDistance(Coordinate coordinate2) throws NullPointerException {
+		if (coordinate2 == null) {
+			throw new NullPointerException();
+		}
+		double tmp = Math.abs(longitude - coordinate2.getLongitude());
+		if (tmp <= 180) {
+			return tmp;
+		} else {
+			return (360 - tmp);
+		}
 	}
 }
