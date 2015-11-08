@@ -33,14 +33,6 @@ public class Location {
 	}
 	
 	/**
-	 * @methodtype constructor
-	 */
-	public Location(String myname, double mylatitude, double mylongitude) {
-		name = myname;
-		coordinate = new Coordinate(mylatitude, mylongitude);
-	}
-	
-	/**
 	 * @methodtype get
 	 */
 	public String getName() {

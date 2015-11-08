@@ -61,21 +61,6 @@ public class LandmarkPhoto extends Photo {
 	}
 	
 	/**
-	 * @methodtype constructor
-	 */
-	public LandmarkPhoto(PhotoId myId, double mylandmarkHeight, int myyearOfManufacture, String mystate, double latitude, double longitude, double myadmissionPrice) throws IllegalArgumentException {
-		super(myId);
-		if (myyearOfManufacture > Calendar.getInstance().get(Calendar.YEAR) || myadmissionPrice < 0) {
-			throw new IllegalArgumentException();
-		}
-		landmarkHeight = mylandmarkHeight;
-		yearOfManufacture = myyearOfManufacture;
-		state = mystate;
-		landmarkLocation = new Coordinate(latitude, longitude);
-		admissionPrice = myadmissionPrice;
-	}
-	
-	/**
 	 * @methodtype get
 	 */
 	public double getLandmarkHeight() {
@@ -123,13 +108,6 @@ public class LandmarkPhoto extends Photo {
 	 */
 	public Coordinate getLandmarkLocation() {
 		return landmarkLocation;
-	}
-	
-	/**
-	 * @methodtype set
-	 */
-	public void setLocation(double latitude, double longitude) throws IllegalArgumentException {
-		landmarkLocation = new Coordinate(latitude, longitude);
 	}
 	
 	/**
