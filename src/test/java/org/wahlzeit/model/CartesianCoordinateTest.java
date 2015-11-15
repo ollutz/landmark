@@ -9,7 +9,6 @@ import org.junit.Test;
 
 public class CartesianCoordinateTest {
 	private CartesianCoordinate location;
-	private CartesianCoordinate location2;
 	private static final double DELTA = 0.0001; 
 	private static final double DELTA2 = 1; 
 
@@ -81,9 +80,9 @@ public class CartesianCoordinateTest {
 		Coordinate Berlin = new SphericCoordinate(52.517, 13.40); //Berlin
 		Coordinate Tokio = new SphericCoordinate(35.70, 139.767); //Tokio
 		Coordinate NewYork = new SphericCoordinate(40.712778, -74.005833); //New York
-		CartesianCoordinate carBerlin = ((SphericCoordinate) Berlin).asCartesianCoordinate();
-		CartesianCoordinate carTokio = ((SphericCoordinate) Tokio).asCartesianCoordinate();
-		CartesianCoordinate carNewYork = ((SphericCoordinate) NewYork).asCartesianCoordinate();
+		CartesianCoordinate carBerlin = AbstractCoordinate.asCartesianCoordinate((SphericCoordinate) Berlin);
+		CartesianCoordinate carTokio = AbstractCoordinate.asCartesianCoordinate((SphericCoordinate) Tokio);
+		CartesianCoordinate carNewYork = AbstractCoordinate.asCartesianCoordinate((SphericCoordinate) NewYork);
 		
 		assertEquals(8918, carBerlin.getDistance(carTokio), DELTA2);
 		assertEquals(8918, carTokio.getDistance(carBerlin), DELTA2);

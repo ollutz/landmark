@@ -3,7 +3,7 @@ package org.wahlzeit.model;
 public interface Coordinate {
 	
 	/**
-	 * @methodtype 
+	 * @methodtype query
 	 */
 	public double getDistance(Coordinate mycoordinate);
 	

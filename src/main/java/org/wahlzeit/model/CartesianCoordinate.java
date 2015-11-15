@@ -1,13 +1,12 @@
 package org.wahlzeit.model;
 
-public class CartesianCoordinate implements Coordinate {
+public class CartesianCoordinate extends AbstractCoordinate {
 	/**
 	 * 
 	 */
 	private double x;
 	private double y;
 	private double z;
-	private static final double DELTA = 1; 
 	private static final double EARTHRADIUS = 6371;
 
 	/**
@@ -79,11 +78,14 @@ public class CartesianCoordinate implements Coordinate {
 	/**
 	 * @methodtype set
 	 */
-	public void setCoordinate(CartesianCoordinate mycoordinate) throws NullPointerException {
+	public void setCoordinate(Coordinate mycoordinate) throws NullPointerException {
 		assertNotNull(mycoordinate);
-		setX(mycoordinate.getX());
-		setY(mycoordinate.getY());
-		setZ(mycoordinate.getZ());
+		
+		CartesianCoordinate newCoordinate = asCartesianCoordinate(mycoordinate);
+		
+		setX(newCoordinate.getX());
+		setY(newCoordinate.getY());
+		setZ(newCoordinate.getZ());
 	}
 	
 	/**
@@ -91,17 +93,15 @@ public class CartesianCoordinate implements Coordinate {
 	 */
 	public double getDistance(Coordinate coordinate2) throws NullPointerException {
 		assertNotNull(coordinate2);
-		CartesianCoordinate other;
-		if ((other = asCartesianCoordinate(coordinate2)) != null) {
-			double xdiff = getXDistance(other);
-			double ydiff = getYDistance(other);
-			double zdiff = getZDistance(other);
-			double d = Math.sqrt(xdiff * xdiff + ydiff * ydiff + zdiff * zdiff);
-			double omega = 2 * Math.asin((d/2)/EARTHRADIUS);
-			return omega * EARTHRADIUS;
-		} else {
-			throw new IllegalArgumentException();
-		}
+		CartesianCoordinate other = asCartesianCoordinate(coordinate2);
+		
+		double xdiff = getXDistance(other);
+		double ydiff = getYDistance(other);
+		double zdiff = getZDistance(other);
+		double d = Math.sqrt(xdiff * xdiff + ydiff * ydiff + zdiff * zdiff);
+		double omega = 2 * Math.asin((d/2)/EARTHRADIUS);
+		
+		return omega * EARTHRADIUS;
 	}
 	
 	/**
@@ -109,12 +109,9 @@ public class CartesianCoordinate implements Coordinate {
 	 */
 	public double getXDistance(Coordinate coordinate2) throws NullPointerException {
 		assertNotNull(coordinate2);
-		CartesianCoordinate other;
-		if ((other = asCartesianCoordinate(coordinate2)) != null) {
-			return Math.abs(x - other.getX());
-		} else {
-			throw new IllegalArgumentException();
-		}	
+		CartesianCoordinate other = asCartesianCoordinate(coordinate2);
+		
+		return Math.abs(x - other.getX());
 	}
 	
 	/**
@@ -122,12 +119,9 @@ public class CartesianCoordinate implements Coordinate {
 	 */
 	public double getYDistance(Coordinate coordinate2) throws NullPointerException {
 		assertNotNull(coordinate2);
-		CartesianCoordinate other;
-		if ((other = asCartesianCoordinate(coordinate2)) != null) {
-			return Math.abs(y - other.getY());
-		} else {
-			throw new IllegalArgumentException();
-		}	
+		CartesianCoordinate other = asCartesianCoordinate(coordinate2);
+		
+		return Math.abs(y - other.getY());
 	}
 	
 	/**
@@ -135,45 +129,9 @@ public class CartesianCoordinate implements Coordinate {
 	 */
 	public double getZDistance(Coordinate coordinate2) throws NullPointerException {
 		assertNotNull(coordinate2);
-		CartesianCoordinate other;
-		if ((other = asCartesianCoordinate(coordinate2)) != null) {
-			return Math.abs(z - other.getZ());
-		} else {
-			throw new IllegalArgumentException();
-		}	
-	}
-
-	/**
-	 * @methodtype conversion
-	 */
-	public CartesianCoordinate asCartesianCoordinate(Coordinate mycoordinate) throws NullPointerException {
-		assertNotNull(mycoordinate);
-		if (mycoordinate instanceof CartesianCoordinate) {
-			return (CartesianCoordinate) mycoordinate;
-		} else if (mycoordinate instanceof SphericCoordinate) {
-			double phi = Math.toRadians(((SphericCoordinate) mycoordinate).getLatitude());
-			double lambda = Math.toRadians(((SphericCoordinate) mycoordinate).getLongitude());
-			double xnew = EARTHRADIUS * Math.cos(phi) * Math.cos(lambda);
-			double ynew = EARTHRADIUS * Math.cos(phi) * Math.sin(lambda);
-			double znew = EARTHRADIUS * Math.sin(phi);
-			CartesianCoordinate ret = new CartesianCoordinate(xnew, ynew, znew);
-			return ret;
-		}
-		return null;
-	}
-	
-	/**
-	 * @methodtype conversion
-	 */
-	public SphericCoordinate asSphericCoordinate() {
-		double x = getX();
-		double y = getY();
-		double z = getZ();
-		double r = Math.sqrt(x*x + y*y + z*z);
-		double lat = Math.toDegrees(Math.asin(z/r));
-		double lon = Math.toDegrees(Math.atan2(y, x));
-		SphericCoordinate ret = new SphericCoordinate(lat, lon);
-		return ret;
+		CartesianCoordinate other = asCartesianCoordinate(coordinate2);
+		
+		return Math.abs(z - other.getZ());	
 	}
 
 	/**

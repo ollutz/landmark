@@ -10,16 +10,14 @@
 
 package org.wahlzeit.model;
 
-public class SphericCoordinate implements Coordinate {
+public class SphericCoordinate extends AbstractCoordinate {
 	
 	/**
 	 * 
 	 */
 	private double latitude;
 	private double longitude;
-	private double radius;
-	private static final double EARTHRADIUS = 6371;
-	private static final double DELTA = 10; 
+	private double radius; 
 
 	/**
 	 * @methodtype constructor
@@ -42,6 +40,17 @@ public class SphericCoordinate implements Coordinate {
 	}
 	
 	/**
+	 * @methodtype constructor
+	 */
+	public SphericCoordinate(double mylatitude, double mylongitude, double myradius) throws IllegalArgumentException {
+		assertValidLatitude(mylatitude);
+		assertValidLongitude(mylongitude);
+		latitude = mylatitude;
+		longitude = mylongitude;
+		radius = myradius;
+	}
+	
+	/**
 	 * @methodtype get
 	 */
 	public double getLatitude() {
@@ -53,6 +62,13 @@ public class SphericCoordinate implements Coordinate {
 	 */
 	public double getLongitude() {
 		return longitude;
+	}
+	
+	/**
+	 * @methodtype get
+	 */
+	public double getRadius() {
+		return radius;
 	}
 	
 	/**
@@ -74,10 +90,21 @@ public class SphericCoordinate implements Coordinate {
 	/**
 	 * @methodtype set
 	 */
-	public void setCoordinate(SphericCoordinate mycoordinate) throws IllegalArgumentException, NullPointerException {
+	public void setRadius(double myradius) {
+		radius = myradius;
+	}
+	
+	/**
+	 * @methodtype set
+	 */
+	public void setCoordinate(Coordinate mycoordinate) throws IllegalArgumentException, NullPointerException {
 		assertNotNull(mycoordinate);
-		setLongitude(mycoordinate.getLongitude());
-		setLatitude(mycoordinate.getLatitude());
+		
+		SphericCoordinate newCoordinate = asSphericCoordinate(mycoordinate);
+		
+		setLongitude(newCoordinate.getLongitude());
+		setLatitude(newCoordinate.getLatitude());
+		setRadius(newCoordinate.getRadius());
 	}
 	
 	/**
@@ -85,20 +112,17 @@ public class SphericCoordinate implements Coordinate {
 	 */
 	public double getDistance(Coordinate coordinate2) throws NullPointerException {
 		assertNotNull(coordinate2);
-		SphericCoordinate other;
-		if ((other = asSphericCoordinate(coordinate2)) != null) {
-			double phi1 = Math.toRadians(latitude);
-			double phi2 = Math.toRadians(((SphericCoordinate) other).getLatitude());
-			double deltaPhi = Math.toRadians(getLatitudinalDistance(other));
-			double deltaLambda = Math.toRadians(getLongitudinalDistance(other));		
+		SphericCoordinate other = asSphericCoordinate(coordinate2);
 		
-			double tmp = Math.sin(deltaPhi/2) * Math.sin(deltaPhi/2) + Math.cos(phi1) * Math.cos(phi2) * Math.sin(deltaLambda/2) * Math.sin(deltaLambda/2);
-			double angle = 2*Math.asin(Math.sqrt(tmp));
-				
-			return Math.abs(EARTHRADIUS*angle);
-		} else {
-			throw new IllegalArgumentException();
-		}
+		double phi1 = Math.toRadians(latitude);
+		double phi2 = Math.toRadians(((SphericCoordinate) other).getLatitude());
+		double deltaPhi = Math.toRadians(getLatitudinalDistance(other));
+		double deltaLambda = Math.toRadians(getLongitudinalDistance(other));		
+		
+		double tmp = Math.sin(deltaPhi/2) * Math.sin(deltaPhi/2) + Math.cos(phi1) * Math.cos(phi2) * Math.sin(deltaLambda/2) * Math.sin(deltaLambda/2);
+		double angle = 2*Math.asin(Math.sqrt(tmp));
+			
+		return Math.abs(radius*angle);
 	}
 	
 	/**
@@ -106,16 +130,12 @@ public class SphericCoordinate implements Coordinate {
 	 */
 	public double getLatitudinalDistance(Coordinate coordinate2) throws NullPointerException {
 		assertNotNull(coordinate2);
-		SphericCoordinate other;
-		if ((other = asSphericCoordinate(coordinate2)) != null) {
-			double tmp = Math.abs(latitude - other.getLatitude());
-			if (tmp <= 90) {
-				return tmp;
-			} else {
-				return (180 - tmp);
-			}
+		SphericCoordinate other = asSphericCoordinate(coordinate2);
+		double tmp = Math.abs(latitude - other.getLatitude());
+		if (tmp <= 90) {
+			return tmp;
 		} else {
-			throw new IllegalArgumentException();
+			return (180 - tmp);
 		}
 	}
 	
@@ -124,50 +144,13 @@ public class SphericCoordinate implements Coordinate {
 	 */
 	public double getLongitudinalDistance(Coordinate coordinate2) throws NullPointerException {
 		assertNotNull(coordinate2);
-		SphericCoordinate other;
-		if ((other = asSphericCoordinate(coordinate2)) != null) {
-			double tmp = Math.abs(longitude - other.getLongitude());
-			if (tmp <= 180) {
-				return tmp;
-			} else {
-				return (360 - tmp);
-			}
+		SphericCoordinate other = asSphericCoordinate(coordinate2);
+		double tmp = Math.abs(longitude - other.getLongitude());
+		if (tmp <= 180) {
+			return tmp;
 		} else {
-			throw new IllegalArgumentException();
+			return (360 - tmp);
 		}
-	}
-
-	/**
-	 * @methodtype conversion
-	 */
-	public SphericCoordinate asSphericCoordinate(Coordinate mycoordinate) {
-		assertNotNull(mycoordinate);
-		if (mycoordinate instanceof SphericCoordinate) {
-			return (SphericCoordinate) mycoordinate;
-		} else if (mycoordinate instanceof CartesianCoordinate) {
-			double x = ((CartesianCoordinate) mycoordinate).getX();
-			double y = ((CartesianCoordinate) mycoordinate).getY();
-			double z = ((CartesianCoordinate) mycoordinate).getZ();
-			double r = Math.sqrt(x*x + y*y+ z*z);
-			double lat = Math.toDegrees(Math.asin(z/r));
-			double lon = Math.toDegrees(Math.atan2(y, x));
-			SphericCoordinate ret = new SphericCoordinate(lat, lon);
-			return ret;
-		}
-		return null;
-	}
-	
-	/**
-	 * @methodtype conversion
-	 */
-	public CartesianCoordinate asCartesianCoordinate() {
-		double phi = Math.toRadians(getLatitude());
-		double lambda = Math.toRadians(getLongitude());
-		double xnew = EARTHRADIUS * Math.cos(phi) * Math.cos(lambda);
-		double ynew = EARTHRADIUS * Math.cos(phi) * Math.sin(lambda);
-		double znew = EARTHRADIUS * Math.sin(phi);
-		CartesianCoordinate ret = new CartesianCoordinate(xnew, ynew, znew);
-		return ret;
 	}
 
 	/**
@@ -197,25 +180,6 @@ public class SphericCoordinate implements Coordinate {
 		}
 	}
 	
-	/**
-	 * @methodtype boolean query
-	 */
-	public boolean isEqual(Coordinate mycoordinate) {
-		if (this == mycoordinate)
-			return true;
-		if (mycoordinate == null)
-			return false;
-		SphericCoordinate other;
-		if ((other = asSphericCoordinate(mycoordinate)) != null) {
-			if (Double.doubleToLongBits(latitude) != Double.doubleToLongBits(other.latitude))
-				return false;
-			if (Double.doubleToLongBits(longitude) != Double.doubleToLongBits(other.longitude))
-				return false;
-			return true;
-		}
-		return false;
-	}
-
 	/**
 	 * @methodtype boolean query
 	 */

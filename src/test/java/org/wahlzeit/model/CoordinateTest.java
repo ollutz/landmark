@@ -4,8 +4,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 public class CoordinateTest {
 	
@@ -20,8 +18,8 @@ public class CoordinateTest {
 	public void initPhotoFilter() {
 		location = new SphericCoordinate();
 		location2 = new SphericCoordinate(45, 90);		
-		carlocation = location.asCartesianCoordinate();
-		carlocation2 = location2.asCartesianCoordinate();
+		carlocation = AbstractCoordinate.asCartesianCoordinate(location);
+		carlocation2 = AbstractCoordinate.asCartesianCoordinate(location2);
 	}
 	
 	@Test
@@ -43,9 +41,9 @@ public class CoordinateTest {
 		Coordinate Berlin = new SphericCoordinate(52.517, 13.40); //Berlin
 		Coordinate Tokio = new SphericCoordinate(35.70, 139.767); //Tokio
 		Coordinate NewYork = new SphericCoordinate(40.712778, -74.005833); //New York
-		CartesianCoordinate carBerlin = ((SphericCoordinate) Berlin).asCartesianCoordinate();
-		CartesianCoordinate carTokio = ((SphericCoordinate) Tokio).asCartesianCoordinate();
-		CartesianCoordinate carNewYork = ((SphericCoordinate) NewYork).asCartesianCoordinate();
+		CartesianCoordinate carBerlin = AbstractCoordinate.asCartesianCoordinate((SphericCoordinate) Berlin);
+		CartesianCoordinate carTokio = AbstractCoordinate.asCartesianCoordinate((SphericCoordinate) Tokio);
+		CartesianCoordinate carNewYork = AbstractCoordinate.asCartesianCoordinate((SphericCoordinate) NewYork);
 		
 		assertEquals(8918, Berlin.getDistance(Tokio), DELTA2);
 		assertEquals(8918, Berlin.getDistance(carTokio), DELTA2);
