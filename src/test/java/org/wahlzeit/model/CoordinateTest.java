@@ -33,6 +33,10 @@ public class CoordinateTest {
 	@Test
 	public void testgetDistance() {
 
+		/*Coordinate location4 = new SphericCoordinate(0, 0);
+		Coordinate location5 = new SphericCoordinate(0, 180);
+		System.out.println(location4.getDistance(location5));*/
+		
 		assertEquals(0, location.getDistance(carlocation), DELTA);
 		assertEquals(0, carlocation.getDistance(location), DELTA);
 		assertEquals(0, location2.getDistance(carlocation2), DELTA);

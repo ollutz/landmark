@@ -26,28 +26,48 @@ public class SphericCoordinate extends AbstractCoordinate {
 		latitude = 0;
 		longitude = 0;
 		radius = EARTHRADIUS;
+		
+		//post-condition
+		assertValidLatitude(latitude);
+		assertValidLongitude(longitude);
+		assertValidRadius(radius);
 	}
 	
 	/**
 	 * @methodtype constructor
 	 */
 	public SphericCoordinate(double mylatitude, double mylongitude) throws IllegalArgumentException {
+		//pre-condition
 		assertValidLatitude(mylatitude);
 		assertValidLongitude(mylongitude);
+		
 		latitude = mylatitude;
 		longitude = mylongitude;
 		radius = EARTHRADIUS;
+		
+		//post-condition
+		assertValidLatitude(latitude);
+		assertValidLongitude(longitude);
+		assertValidRadius(radius);
 	}
 	
 	/**
 	 * @methodtype constructor
 	 */
 	public SphericCoordinate(double mylatitude, double mylongitude, double myradius) throws IllegalArgumentException {
+		//pre-conditions
 		assertValidLatitude(mylatitude);
 		assertValidLongitude(mylongitude);
+		assertValidRadius(myradius);
+		
 		latitude = mylatitude;
 		longitude = mylongitude;
 		radius = myradius;
+		
+		//post-conditions
+		assertValidLatitude(latitude);
+		assertValidLongitude(longitude);
+		assertValidRadius(radius);
 	}
 	
 	/**
@@ -75,44 +95,71 @@ public class SphericCoordinate extends AbstractCoordinate {
 	 * @methodtype set
 	 */
 	public void setLatitude(double mylatitude) throws IllegalArgumentException {
+		//pre-condition
 		assertValidLatitude(mylatitude);
 		latitude = mylatitude;
+		//post-condition
+		assertValidLatitude(latitude);
 	}
 	
 	/**
 	 * @methodtype set
 	 */
 	public void setLongitude(double mylongitude) throws IllegalArgumentException {
+		//pre-condition
 		assertValidLongitude(mylongitude);
 		longitude = mylongitude;
+		//post-condition
+		assertValidLongitude(longitude);
 	}
 	
 	/**
 	 * @methodtype set
 	 */
 	public void setRadius(double myradius) {
+		//pre-condition
+		assertValidRadius(myradius);
 		radius = myradius;
+		//post-condition
+		assertValidRadius(radius);
 	}
 	
+	
+
 	/**
 	 * @methodtype set
 	 */
 	public void setCoordinate(Coordinate mycoordinate) throws IllegalArgumentException, NullPointerException {
+		//pre-condition
 		assertNotNull(mycoordinate);
 		
 		SphericCoordinate newCoordinate = asSphericCoordinate(mycoordinate);
 		
-		setLongitude(newCoordinate.getLongitude());
+		//valid class-invariants
+		assertClassInvariants(newCoordinate);
+		
 		setLatitude(newCoordinate.getLatitude());
+		setLongitude(newCoordinate.getLongitude());
 		setRadius(newCoordinate.getRadius());
+		
+		//post-conditions
+		assertValidLatitude(latitude);
+		assertValidLongitude(longitude);
+		assertValidRadius(radius);
 	}
 	
 	/**
 	 * @methodtype query
 	 */
-	public double getDistance(Coordinate coordinate2) throws NullPointerException {
+	public double getDistance(Coordinate coordinate2) {
+		//pre-condition
 		assertNotNull(coordinate2);
+		
 		SphericCoordinate other = asSphericCoordinate(coordinate2);
+		
+		//valid class-invariants
+		assertClassInvariants(this);
+		assertClassInvariants(other);
 		
 		double phi1 = Math.toRadians(latitude);
 		double phi2 = Math.toRadians(((SphericCoordinate) other).getLatitude());
@@ -121,36 +168,64 @@ public class SphericCoordinate extends AbstractCoordinate {
 		
 		double tmp = Math.sin(deltaPhi/2) * Math.sin(deltaPhi/2) + Math.cos(phi1) * Math.cos(phi2) * Math.sin(deltaLambda/2) * Math.sin(deltaLambda/2);
 		double angle = 2*Math.asin(Math.sqrt(tmp));
-			
-		return Math.abs(radius*angle);
+		
+		double distance = Math.abs(radius*angle);
+		
+		//valid class-invariants
+		assertClassInvariants(this);
+		assertClassInvariants(other);
+		
+		//post-condition
+		assert(distance > 0 && distance < 20016);
+		
+		return distance;
 	}
+	
 	
 	/**
 	 * @methodtype query
 	 */
-	public double getLatitudinalDistance(Coordinate coordinate2) throws NullPointerException {
+	public double getLatitudinalDistance(Coordinate coordinate2) {
+		//pre-condition
 		assertNotNull(coordinate2);
+		
 		SphericCoordinate other = asSphericCoordinate(coordinate2);
+		
+		//valid class-invariants
+		assertClassInvariants(other);
+		
 		double tmp = Math.abs(latitude - other.getLatitude());
-		if (tmp <= 90) {
-			return tmp;
-		} else {
-			return (180 - tmp);
+		if (tmp > 90) {
+			tmp = (180 - tmp);
 		}
+		
+		//post-condition
+		assert(tmp <= 90);
+		
+		return tmp;
 	}
 	
 	/**
 	 * @methodtype query
 	 */
-	public double getLongitudinalDistance(Coordinate coordinate2) throws NullPointerException {
+	public double getLongitudinalDistance(Coordinate coordinate2) {
+		//pre-condition
 		assertNotNull(coordinate2);
+		
 		SphericCoordinate other = asSphericCoordinate(coordinate2);
+		
+		//valid class-invariants
+		assertClassInvariants(other);
+		
 		double tmp = Math.abs(longitude - other.getLongitude());
-		if (tmp <= 180) {
-			return tmp;
-		} else {
-			return (360 - tmp);
-		}
+		if (tmp > 180) {
+			tmp = (360 - tmp);
+		} 
+		
+		//post-condition
+		assert(tmp <=180);
+		
+		return tmp;
 	}
 
 	/**
@@ -166,6 +241,7 @@ public class SphericCoordinate extends AbstractCoordinate {
 	 * @methodtype assertion
 	 */
 	private void assertValidLatitude(double mylatitude) throws IllegalArgumentException {
+		assertValidValue(mylatitude);
 		if (mylatitude <= -90 || mylatitude > 90 || Double.isNaN(mylatitude)) {
 			throw new IllegalArgumentException();
 		}
@@ -175,7 +251,27 @@ public class SphericCoordinate extends AbstractCoordinate {
 	 * @methodtype assertion
 	 */
 	private void assertValidLongitude(double mylongitude) throws IllegalArgumentException {
-		if (mylongitude <= -180 || mylongitude > 180 || Double.isNaN(mylongitude)) {
+		assertValidValue(mylongitude);
+		if (mylongitude <= -180 || mylongitude > 180) {
+			throw new IllegalArgumentException();
+		}
+	}
+	
+	/**
+	 * @methodtype assertion
+	 */
+	private void assertValidRadius(double myradius) throws IllegalArgumentException {
+		assertValidValue(myradius);
+		if (myradius < 0) {
+			throw new IllegalArgumentException();
+		}
+	}
+	
+	/**
+	 * @methodtype assertion
+	 */
+	private void assertValidValue(double myvalue) throws IllegalArgumentException {
+		if (Double.isNaN(myvalue)) {
 			throw new IllegalArgumentException();
 		}
 	}

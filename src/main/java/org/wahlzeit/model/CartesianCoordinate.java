@@ -16,18 +16,25 @@ public class CartesianCoordinate extends AbstractCoordinate {
 		x = EARTHRADIUS;
 		y = 0;
 		z = 0;
+		
+		//valid class-invariants
+		assertClassInvariants(asSphericCoordinate(this));
 	}
 	
 	/**
 	 * @methodtype constructor
 	 */
 	public CartesianCoordinate(double myx, double myy, double myz) {
+		//pre-conditions
 		assertValidValue(myx);
 		assertValidValue(myy);
 		assertValidValue(myz);
 		x = myx;
 		y = myy;
 		z = myz;
+		
+		//valid class-invariants
+		assertClassInvariants(asSphericCoordinate(this));
 	}
 	
 	/**
@@ -55,6 +62,7 @@ public class CartesianCoordinate extends AbstractCoordinate {
 	 * @methodtype set
 	 */
 	public void setX(double myx) {
+		//pre-condition
 		assertValidValue(myx);
 		x = myx;
 	}
@@ -63,6 +71,7 @@ public class CartesianCoordinate extends AbstractCoordinate {
 	 * @methodtype set
 	 */
 	public void setY(double myy) {
+		//pre-condition
 		assertValidValue(myy);
 		y = myy;
 	}
@@ -71,6 +80,7 @@ public class CartesianCoordinate extends AbstractCoordinate {
 	 * @methodtype set
 	 */
 	public void setZ(double myz) {
+		//pre-condition
 		assertValidValue(myz);
 		z = myz;
 	}
@@ -79,59 +89,139 @@ public class CartesianCoordinate extends AbstractCoordinate {
 	 * @methodtype set
 	 */
 	public void setCoordinate(Coordinate mycoordinate) throws NullPointerException {
+		//pre-condition
 		assertNotNull(mycoordinate);
 		
 		CartesianCoordinate newCoordinate = asCartesianCoordinate(mycoordinate);
 		
+		//valid class-invariants
+		assertClassInvariants(asSphericCoordinate(newCoordinate));
+		
 		setX(newCoordinate.getX());
 		setY(newCoordinate.getY());
 		setZ(newCoordinate.getZ());
+		
+		//valid class-invariants
+		assertClassInvariants(asSphericCoordinate(this));
+		
+		//post-conditions
+		assertValidValue(x);
+		assertValidValue(y);
+		assertValidValue(z);
 	}
+	
 	
 	/**
 	 * @methodtype query
 	 */
 	public double getDistance(Coordinate coordinate2) throws NullPointerException {
+		//pre-condition
 		assertNotNull(coordinate2);
+		
 		CartesianCoordinate other = asCartesianCoordinate(coordinate2);
+		
+		//valid class-invariants
+		assertClassInvariants(asSphericCoordinate(this));
+		assertClassInvariants(asSphericCoordinate(coordinate2));
+		assertClassInvariants(asSphericCoordinate(other));
 		
 		double xdiff = getXDistance(other);
 		double ydiff = getYDistance(other);
 		double zdiff = getZDistance(other);
 		double d = Math.sqrt(xdiff * xdiff + ydiff * ydiff + zdiff * zdiff);
 		double omega = 2 * Math.asin((d/2)/EARTHRADIUS);
+		double distance = omega * EARTHRADIUS;
 		
-		return omega * EARTHRADIUS;
+		//valid class-invariants
+		assertClassInvariants(asSphericCoordinate(this));
+		assertClassInvariants(asSphericCoordinate(coordinate2));
+		assertClassInvariants(asSphericCoordinate(other));
+		
+		//post-condition
+		assert(distance < 20016);
+		
+		return distance;
 	}
 	
 	/**
 	 * @methodtype query
 	 */
 	public double getXDistance(Coordinate coordinate2) throws NullPointerException {
+		//pre-condition
 		assertNotNull(coordinate2);
+		
 		CartesianCoordinate other = asCartesianCoordinate(coordinate2);
 		
-		return Math.abs(x - other.getX());
+		//valid class-invariants
+		assertClassInvariants(asSphericCoordinate(this));
+		assertClassInvariants(asSphericCoordinate(coordinate2));
+		assertClassInvariants(asSphericCoordinate(other));
+		
+		double distance = Math.abs(x - other.getX());
+		
+		//valid class-invariants
+		assertClassInvariants(asSphericCoordinate(this));
+		assertClassInvariants(asSphericCoordinate(coordinate2));
+		assertClassInvariants(asSphericCoordinate(other));
+		
+		//post-condition
+		assert(distance >= 0);
+		
+		return distance;
 	}
 	
 	/**
 	 * @methodtype query
 	 */
 	public double getYDistance(Coordinate coordinate2) throws NullPointerException {
+		//pre-condition
 		assertNotNull(coordinate2);
+			
 		CartesianCoordinate other = asCartesianCoordinate(coordinate2);
-		
-		return Math.abs(y - other.getY());
+				
+		//valid class-invariants
+		assertClassInvariants(asSphericCoordinate(this));
+		assertClassInvariants(asSphericCoordinate(coordinate2));
+		assertClassInvariants(asSphericCoordinate(other));
+				
+		double distance = Math.abs(y - other.getY());
+			
+		//valid class-invariants
+		assertClassInvariants(asSphericCoordinate(this));
+		assertClassInvariants(asSphericCoordinate(coordinate2));
+		assertClassInvariants(asSphericCoordinate(other));
+				
+		//post-condition
+		assert(distance >= 0);
+			
+		return distance;
 	}
 	
 	/**
 	 * @methodtype query
 	 */
 	public double getZDistance(Coordinate coordinate2) throws NullPointerException {
+		//pre-condition
 		assertNotNull(coordinate2);
+				
 		CartesianCoordinate other = asCartesianCoordinate(coordinate2);
-		
-		return Math.abs(z - other.getZ());	
+				
+		//valid class-invariants
+		assertClassInvariants(asSphericCoordinate(this));
+		assertClassInvariants(asSphericCoordinate(coordinate2));
+		assertClassInvariants(asSphericCoordinate(other));
+				
+		double distance = Math.abs(z - other.getZ());
+			
+		//valid class-invariants
+		assertClassInvariants(asSphericCoordinate(this));
+		assertClassInvariants(asSphericCoordinate(coordinate2));
+		assertClassInvariants(asSphericCoordinate(other));
+				
+		//post-condition
+		assert(distance >= 0);
+				
+		return distance;
 	}
 
 	/**

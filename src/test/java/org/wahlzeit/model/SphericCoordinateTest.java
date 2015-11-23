@@ -329,6 +329,10 @@ public class SphericCoordinateTest {
 		location2.setCoordinate(new SphericCoordinate(35.70, 139.767)); //Tokio
 		Coordinate location3 = new SphericCoordinate(40.712778, -74.005833); //New York
 		
+		/*Coordinate location4 = new SphericCoordinate(0, 0);
+		Coordinate location5 = new SphericCoordinate(0, 180);
+		System.out.println(location4.getDistance(location5));*/
+		
 		assertEquals(8918, location.getDistance(location2), DELTA2);
 		assertEquals(8918, location2.getDistance(location), DELTA2);
 				
