@@ -192,6 +192,7 @@ public class SphericCoordinate extends AbstractCoordinate {
 		SphericCoordinate other = asSphericCoordinate(coordinate2);
 		
 		//valid class-invariants
+		assertClassInvariants(this);
 		assertClassInvariants(other);
 		
 		double tmp = Math.abs(latitude - other.getLatitude());
@@ -199,8 +200,12 @@ public class SphericCoordinate extends AbstractCoordinate {
 			tmp = (180 - tmp);
 		}
 		
+		//valid class-invariants
+		assertClassInvariants(this);
+		assertClassInvariants(other);
+		
 		//post-condition
-		assert(tmp <= 90);
+		assert(tmp >= 0 && tmp <= 90);
 		
 		return tmp;
 	}
@@ -215,6 +220,7 @@ public class SphericCoordinate extends AbstractCoordinate {
 		SphericCoordinate other = asSphericCoordinate(coordinate2);
 		
 		//valid class-invariants
+		assertClassInvariants(this);
 		assertClassInvariants(other);
 		
 		double tmp = Math.abs(longitude - other.getLongitude());
@@ -222,8 +228,12 @@ public class SphericCoordinate extends AbstractCoordinate {
 			tmp = (360 - tmp);
 		} 
 		
+		//valid class-invariants
+		assertClassInvariants(this);
+		assertClassInvariants(other);
+		
 		//post-condition
-		assert(tmp <=180);
+		assert(tmp >= 0 && tmp <=180);
 		
 		return tmp;
 	}

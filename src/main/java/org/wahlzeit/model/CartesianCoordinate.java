@@ -138,7 +138,7 @@ public class CartesianCoordinate extends AbstractCoordinate {
 		assertClassInvariants(asSphericCoordinate(other));
 		
 		//post-condition
-		assert(distance < 20016);
+		assert(distance >= 0 && distance < 20016);
 		
 		return distance;
 	}
