@@ -21,9 +21,12 @@
 package org.wahlzeit.model;
 
 import org.wahlzeit.services.LogBuilder;
+import org.wahlzeit.utils.Pattern;
 
 import java.util.logging.Logger;
 
+
+@Pattern(name = "Singleton", participants = {"Singleton"})
 /**
  * An Abstract Factory for creating photos and related objects.
  */
