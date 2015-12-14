@@ -8,9 +8,9 @@ public class CartesianCoordinate extends AbstractCoordinate {
 	/**
 	 * 
 	 */
-	private final double x;
-	private final double y;
-	private final double z;
+	private double x;
+	private double y;
+	private double z;
 	private static final double EARTHRADIUS = 6371;
 
 	/**
