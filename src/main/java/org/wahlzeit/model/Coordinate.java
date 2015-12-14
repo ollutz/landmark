@@ -11,4 +11,19 @@ public interface Coordinate {
 	 * @methodtype boolean query
 	 */
 	public boolean isEqual(Coordinate mycoordinate);
+	
+	/**
+	 * @methodtype get
+	 */
+	public double getLatitude();
+	
+	/**
+	 * @methodtype get
+	 */
+	public double getLongitude();
+		
+	/**
+	 * @methodtype get
+	 */
+	public double getRadius();
 }

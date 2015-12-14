@@ -15,12 +15,11 @@ public abstract class AbstractCoordinate implements Coordinate {
 		//pre-condition
 		assertNotNull(mycoordinate);
 		
-		SphericCoordinate coordinate1 = asSphericCoordinate(this);
-		SphericCoordinate coordinate2 = asSphericCoordinate(mycoordinate);
-		
-		if (Double.doubleToLongBits(coordinate1.getLatitude()) != Double.doubleToLongBits(coordinate2.getLatitude()))
+		if (Double.doubleToLongBits(this.getLatitude()) != Double.doubleToLongBits(mycoordinate.getLatitude()))
 			return false;
-		if (Double.doubleToLongBits(coordinate1.getLongitude()) != Double.doubleToLongBits(coordinate2.getLongitude()))
+		if (Double.doubleToLongBits(this.getLongitude()) != Double.doubleToLongBits(mycoordinate.getLongitude()))
+			return false;
+		if (Double.doubleToLongBits(this.getRadius()) != Double.doubleToLongBits(mycoordinate.getRadius()))
 			return false;
 		return true;
 	}
@@ -28,71 +27,86 @@ public abstract class AbstractCoordinate implements Coordinate {
 	/**
 	 * @methodtype query
 	 */
-	public abstract double getDistance(Coordinate mycoordinate);
-	
-	/**
-	 * @methodtype conversion
-	 */
-	protected static SphericCoordinate asSphericCoordinate(Coordinate mycoordinate) {
+	public double getDistance(Coordinate coordinate2) {
 		//pre-condition
-		assertNotNull(mycoordinate);
-		if (mycoordinate instanceof SphericCoordinate) {
-			SphericCoordinate ret = (SphericCoordinate) mycoordinate;
-			
-			//valid class-invariants
-			assertClassInvariants(ret);
-			
-			return ret;
-		} else if (mycoordinate instanceof CartesianCoordinate) {
-			double x = ((CartesianCoordinate) mycoordinate).getX();
-			double y = ((CartesianCoordinate) mycoordinate).getY();
-			double z = ((CartesianCoordinate) mycoordinate).getZ();
-			double r = Math.sqrt(x*x + y*y+ z*z);
-			double lat = Math.toDegrees(Math.asin(z/r));
-			double lon = Math.toDegrees(Math.atan2(y, x));
-			SphericCoordinate ret = new SphericCoordinate(lat, lon);
-			
-			//valid class-invariants
-			assertClassInvariants(ret);
-			
-			return ret;
-		} else {
-			throw new IllegalArgumentException("Unknown coordinate instance");
-		}
-	}
-	
-	/**
-	 * @methodtype conversion
-	 */
-	protected static CartesianCoordinate asCartesianCoordinate(Coordinate mycoordinate) throws NullPointerException {
-		//pre-condition
-		assertNotNull(mycoordinate);
+		assertNotNull(coordinate2);
 		
-		if (mycoordinate instanceof CartesianCoordinate) {
-			CartesianCoordinate ret = (CartesianCoordinate) mycoordinate;
-			
-			//valid class-invariants
-			assertClassInvariants(asSphericCoordinate(ret));
-			
-			return ret;
-		} else if (mycoordinate instanceof SphericCoordinate) {
-			double phi = Math.toRadians(((SphericCoordinate) mycoordinate).getLatitude());
-			double lambda = Math.toRadians(((SphericCoordinate) mycoordinate).getLongitude());
-			double radius = ((SphericCoordinate) mycoordinate).getRadius();
-			double xnew = radius * Math.cos(phi) * Math.cos(lambda);
-			double ynew = radius * Math.cos(phi) * Math.sin(lambda);
-			double znew = radius * Math.sin(phi);
-			CartesianCoordinate ret = new CartesianCoordinate(xnew, ynew, znew);
-
-			//valid class-invariants
-			assertClassInvariants(asSphericCoordinate(ret));
-			
-			return ret;
-		} else {
-			throw new IllegalArgumentException("Unknown coordinate instance");
-		}
+		//valid class-invariants
+		assertClassInvariants(this);
+		assertClassInvariants(coordinate2);
+		
+		double phi1 = Math.toRadians(this.getLatitude());
+		double phi2 = Math.toRadians(coordinate2.getLatitude());
+		double deltaPhi = Math.toRadians(getLatitudinalDistance(coordinate2));
+		double deltaLambda = Math.toRadians(getLongitudinalDistance(coordinate2));		
+		
+		double tmp = Math.sin(deltaPhi/2) * Math.sin(deltaPhi/2) + Math.cos(phi1) * Math.cos(phi2) * Math.sin(deltaLambda/2) * Math.sin(deltaLambda/2);
+		double angle = 2*Math.asin(Math.sqrt(tmp));
+		
+		double distance = Math.abs(getRadius()*angle);
+		
+		//valid class-invariants
+		assertClassInvariants(this);
+		assertClassInvariants(coordinate2);
+		
+		//post-condition
+		assert(distance > 0 && distance < 20016);
+		
+		return distance;
 	}
-
+	
+	/**
+	 * @methodtype query
+	 */
+	public double getLatitudinalDistance(Coordinate coordinate2) {
+		//pre-condition
+		assertNotNull(coordinate2);
+		
+		//valid class-invariants
+		assertClassInvariants(this);
+		assertClassInvariants(coordinate2);
+		
+		double tmp = Math.abs(this.getLatitude() - coordinate2.getLatitude());
+		if (tmp > 90) {
+			tmp = (180 - tmp);
+		}
+		
+		//valid class-invariants
+		assertClassInvariants(this);
+		assertClassInvariants(coordinate2);
+		
+		//post-condition
+		assert(tmp >= 0 && tmp <= 90);
+		
+		return tmp;
+	}
+	
+	/**
+	 * @methodtype query
+	 */
+	public double getLongitudinalDistance(Coordinate coordinate2) {
+		//pre-condition
+		assertNotNull(coordinate2);
+		
+		//valid class-invariants
+		assertClassInvariants(this);
+		assertClassInvariants(coordinate2);
+		
+		double tmp = Math.abs(this.getLongitude() - coordinate2.getLongitude());
+		if (tmp > 180) {
+			tmp = (360 - tmp);
+		} 
+		
+		//valid class-invariants
+		assertClassInvariants(this);
+		assertClassInvariants(coordinate2);
+		
+		//post-condition
+		assert(tmp >= 0 && tmp <=180);
+		
+		return tmp;
+	}
+	
 	/**
 	 * @methodtype assertion
 	 */
@@ -144,7 +158,7 @@ public abstract class AbstractCoordinate implements Coordinate {
 	/**
 	 * @methodtype assertion
 	 */
-	protected static void assertClassInvariants(SphericCoordinate mycoordinate) throws IllegalStateException  {
+	protected static void assertClassInvariants(Coordinate mycoordinate) throws IllegalStateException  {
 		try {
 			assertNotNull(mycoordinate);
 		} catch (IllegalArgumentException e) {
