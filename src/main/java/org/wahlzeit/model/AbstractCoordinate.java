@@ -1,11 +1,14 @@
 package org.wahlzeit.model;
 
+import java.util.HashMap;
+
 import org.wahlzeit.utils.Pattern;
 
 public abstract class AbstractCoordinate implements Coordinate {
 	
 	protected static final double EARTHRADIUS = 6371;
 	
+	static HashMap<Integer, Coordinate> coordinateInstances = new HashMap<Integer, Coordinate>();	
 	
 	@Pattern (name = "Template", participants = {"AbstractCoordinate", "CartesianCoordinate", "SphericCoordinate"})
 	/**
@@ -179,5 +182,43 @@ public abstract class AbstractCoordinate implements Coordinate {
 		} catch (IllegalArgumentException e) {
 			throw new IllegalStateException();
 		}
+	}
+	
+	/**
+	 * @methodtype comparison
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		long temp;
+		temp = Double.doubleToLongBits(this.getLatitude());
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		temp = Double.doubleToLongBits(this.getLongitude());
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		temp = Double.doubleToLongBits(this.getRadius());
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		return result;
+	}
+
+	/**
+	 * @methodtype boolean query
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		SphericCoordinate other = (SphericCoordinate) obj;
+		if (Double.doubleToLongBits(this.getLatitude()) != Double.doubleToLongBits(other.getLatitude()))
+			return false;
+		if (Double.doubleToLongBits(this.getLongitude()) != Double.doubleToLongBits(other.getLongitude()))
+			return false;
+		if (Double.doubleToLongBits(this.getRadius()) != Double.doubleToLongBits(other.getRadius()))
+			return false;
+		return true;
 	}
 }

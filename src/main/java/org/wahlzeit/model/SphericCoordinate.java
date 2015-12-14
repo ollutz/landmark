@@ -19,14 +19,14 @@ public class SphericCoordinate extends AbstractCoordinate {
 	/**
 	 * 
 	 */
-	private double latitude;
-	private double longitude;
-	private double radius; 
+	private final double latitude;
+	private final double longitude;
+	private final double radius; 
 
 	/**
 	 * @methodtype constructor
 	 */
-	public SphericCoordinate() {
+	private SphericCoordinate() {
 		latitude = 0;
 		longitude = 0;
 		radius = EARTHRADIUS;
@@ -40,7 +40,7 @@ public class SphericCoordinate extends AbstractCoordinate {
 	/**
 	 * @methodtype constructor
 	 */
-	public SphericCoordinate(double mylatitude, double mylongitude) throws IllegalArgumentException {
+	private SphericCoordinate(double mylatitude, double mylongitude) throws IllegalArgumentException {
 		//pre-condition
 		assertValidLatitude(mylatitude);
 		assertValidLongitude(mylongitude);
@@ -58,7 +58,7 @@ public class SphericCoordinate extends AbstractCoordinate {
 	/**
 	 * @methodtype constructor
 	 */
-	public SphericCoordinate(double mylatitude, double mylongitude, double myradius) throws IllegalArgumentException {
+	private SphericCoordinate(double mylatitude, double mylongitude, double myradius) throws IllegalArgumentException {
 		//pre-conditions
 		assertValidLatitude(mylatitude);
 		assertValidLongitude(mylongitude);
@@ -72,6 +72,27 @@ public class SphericCoordinate extends AbstractCoordinate {
 		assertValidLatitude(latitude);
 		assertValidLongitude(longitude);
 		assertValidRadius(radius);
+	}
+	
+	/**
+	 * @methodtype comparison
+	 */
+	public static SphericCoordinate getInstance(double mylatitude, double mylongitude, double myradius) {
+		SphericCoordinate tmp = new SphericCoordinate(mylatitude, mylongitude, myradius);
+		int hashCode = tmp.hashCode();
+		Coordinate ret = coordinateInstances.get(hashCode);
+		
+		if (ret == null) {
+			synchronized (coordinateInstances) {
+				ret = coordinateInstances.get(hashCode);
+				if (ret == null) {
+					ret = tmp;
+					coordinateInstances.put(hashCode, ret);
+				}
+			}
+		}
+		
+		return (SphericCoordinate) ret;
 	}
 	
 	/**
@@ -132,39 +153,5 @@ public class SphericCoordinate extends AbstractCoordinate {
 		if (Double.isNaN(myvalue)) {
 			throw new IllegalArgumentException();
 		}
-	}
-	
-	/**
-	 * @methodtype boolean query
-	 */
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		SphericCoordinate other = (SphericCoordinate) obj;
-		if (Double.doubleToLongBits(latitude) != Double.doubleToLongBits(other.latitude))
-			return false;
-		if (Double.doubleToLongBits(longitude) != Double.doubleToLongBits(other.longitude))
-			return false;
-		return true;
-	}
-	
-	/**
-	 * @methodtype comparison
-	 */
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		long temp;
-		temp = Double.doubleToLongBits(latitude);
-		result = prime * result + (int) (temp ^ (temp >>> 32));
-		temp = Double.doubleToLongBits(longitude);
-		result = prime * result + (int) (temp ^ (temp >>> 32));
-		return result;
-	}
+	}	
 }

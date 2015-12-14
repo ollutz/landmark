@@ -8,15 +8,15 @@ public class CartesianCoordinate extends AbstractCoordinate {
 	/**
 	 * 
 	 */
-	private double x;
-	private double y;
-	private double z;
+	private final double x;
+	private final double y;
+	private final double z;
 	private static final double EARTHRADIUS = 6371;
 
 	/**
 	 * @methodtype constructor
 	 */
-	public CartesianCoordinate() {
+	private CartesianCoordinate() {
 		x = EARTHRADIUS;
 		y = 0;
 		z = 0;
@@ -28,7 +28,7 @@ public class CartesianCoordinate extends AbstractCoordinate {
 	/**
 	 * @methodtype constructor
 	 */
-	public CartesianCoordinate(double myx, double myy, double myz) {
+	private CartesianCoordinate(double myx, double myy, double myz) {
 		//pre-conditions
 		assertValidValue(myx);
 		assertValidValue(myy);
@@ -39,6 +39,27 @@ public class CartesianCoordinate extends AbstractCoordinate {
 		
 		//valid class-invariants
 		assertClassInvariants(this);
+	}
+	
+	/**
+	 * @methodtype comparison
+	 */
+	public static CartesianCoordinate getInstance(double myx, double myy, double myz) {
+		CartesianCoordinate tmp = new CartesianCoordinate(myx, myy, myz);
+		int hashCode = tmp.hashCode();
+		Coordinate ret = coordinateInstances.get(hashCode);
+		
+		if (ret == null) {
+			synchronized (coordinateInstances) {
+				ret = coordinateInstances.get(hashCode);
+				if (ret == null) {
+					ret = tmp;
+					coordinateInstances.put(hashCode, ret);
+				}
+			}
+		}
+		
+		return (CartesianCoordinate) ret;
 	}
 	
 	/**
@@ -118,22 +139,5 @@ public class CartesianCoordinate extends AbstractCoordinate {
 		if (Double.doubleToLongBits(z) != Double.doubleToLongBits(other.z))
 			return false;
 		return true;
-	}
-	
-	/**
-	 * @methodtype comparison
-	 */
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		long temp;
-		temp = Double.doubleToLongBits(x);
-		result = prime * result + (int) (temp ^ (temp >>> 32));
-		temp = Double.doubleToLongBits(y);
-		result = prime * result + (int) (temp ^ (temp >>> 32));
-		temp = Double.doubleToLongBits(z);
-		result = prime * result + (int) (temp ^ (temp >>> 32));
-		return result;
 	}
 }
