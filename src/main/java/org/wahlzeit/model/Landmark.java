@@ -41,6 +41,13 @@ public class Landmark {
 	}
 	
 	/**
+	 * @methodtype set
+	 */
+	public void setType(LandmarkType lmt) {
+		landmarkType = lmt;
+	}
+	
+	/**
 	 * @methodtype get
 	 */
 	public double getLandmarkHeight() {
