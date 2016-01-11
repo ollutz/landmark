@@ -1,7 +1,5 @@
 package org.wahlzeit.model;
 
-import java.util.Calendar;
-
 import com.googlecode.objectify.annotation.Subclass;
 
 @Subclass
@@ -15,139 +13,27 @@ public class LandmarkPhoto extends Photo {
 	/**
 	 * 
 	 */
-	private double landmarkHeight;
-	private int yearOfManufacture;
-	private String state;
-	private Coordinate landmarkLocation;
-	private double admissionPrice;
+	private Landmark landmark;
 
 	/**
 	 * @methodtype constructor
 	 */
-	public LandmarkPhoto() {
-		super();
-		landmarkHeight = 0;
-		yearOfManufacture = 0;
-		state = "";
-		landmarkLocation = null;
-		admissionPrice = 0;
-	}
-	
-	/**
-	 * @methodtype constructor
-	 */
-	public LandmarkPhoto(PhotoId myId) {
+	public LandmarkPhoto(PhotoId myId, Landmark lm) {
 		super(myId);
-		landmarkHeight = 0;
-		yearOfManufacture = 0;
-		state = "";
-		landmarkLocation = null;
-		admissionPrice = 0;
-	}
-	
-	/**
-	 * @methodtype constructor
-	 */
-	public LandmarkPhoto(PhotoId myId, double mylandmarkHeight, int myyearOfManufacture, String mystate, Coordinate mylandmarkLocation, double myadmissionPrice) throws IllegalArgumentException {
-		super(myId);
-		if (myyearOfManufacture > Calendar.getInstance().get(Calendar.YEAR) || myadmissionPrice < 0) {
-			throw new IllegalArgumentException();
-		}		
-		landmarkHeight = mylandmarkHeight;
-		yearOfManufacture = myyearOfManufacture;
-		state = mystate;
-		landmarkLocation = mylandmarkLocation;
-		admissionPrice = myadmissionPrice;
+		landmark = lm;
 	}
 	
 	/**
 	 * @methodtype get
 	 */
-	public double getLandmarkHeight() {
-		return landmarkHeight;
+	public Landmark getLandmark() {
+		return landmark;
 	}
 	
 	/**
 	 * @methodtype set
 	 */
-	public void setLandmarkHeight(double mylandmarkHeight) {
-		landmarkHeight = mylandmarkHeight;
+	public void setLandmark(Landmark lm) {
+		landmark = lm;
 	}
-	
-	/**
-	 * @methodtype get
-	 */
-	public int getYearOfManufacture() {
-		return yearOfManufacture;
-	}
-	
-	/**
-	 * @methodtype set
-	 */
-	public void setYearOfManufacture(int myyearOfManufacture) throws IllegalArgumentException {
-		assertIsYearOfManufactureValid(myyearOfManufacture);
-		yearOfManufacture = myyearOfManufacture;
-	}
-	
-	/**
-	 * @methodtype get
-	 */
-	public String getState() {
-		return state;
-	}
-	
-	/**
-	 * @methodtype set
-	 */
-	public void setState(String mystate) {
-		state = mystate;
-	}
-	
-	/**
-	 * @methodtype get
-	 */
-	public Coordinate getLandmarkLocation() {
-		return landmarkLocation;
-	}
-	
-	/**
-	 * @methodtype set
-	 */
-	public void setLocation(Coordinate mylandmarkLocation) {
-		landmarkLocation = mylandmarkLocation;
-	}
-	
-	/**
-	 * @methodtype get
-	 */
-	public double getAdmissionPrice() {
-		return admissionPrice;
-	}
-	
-	/**
-	 * @methodtype set
-	 */
-	public void setAdmissionPrice(double myadmissionPrice) throws IllegalArgumentException {
-		assertIsAdmissionPriceValid(myadmissionPrice);
-		admissionPrice = myadmissionPrice;
-	}
-	
-	/**
-	 * @methodtype assertion
-	 */
-	public void assertIsYearOfManufactureValid(int myyearOfManufacture) throws IllegalArgumentException {
-		if (myyearOfManufacture > Calendar.getInstance().get(Calendar.YEAR)) {
-			throw new IllegalArgumentException();
-		}
-	}
-	
-	/**
-	 * @methodtype assertion
-	 */	
-	public void assertIsAdmissionPriceValid(double myadmissionPrice) throws IllegalArgumentException {
-		if (myadmissionPrice < 0) {
-			throw new IllegalArgumentException("Admission price should not be negative");
-		}
-	}
-	
 }

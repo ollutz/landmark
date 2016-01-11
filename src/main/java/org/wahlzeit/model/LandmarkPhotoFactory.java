@@ -47,25 +47,11 @@ public class LandmarkPhotoFactory extends PhotoFactory {
 	}
 
 	/**
-	 * @methodtype factory
-	 */
-	public Photo createPhoto() {
-		return new LandmarkPhoto();
-	}
-
-	/**
 	 * Creates a new photo with the specified id
 	 * 
 	 * @methodtype factory
 	 */
-	public Photo createPhoto(PhotoId id) {
-		return new LandmarkPhoto(id);
-	}
-	
-	/**
-	 * @methodtype factory
-	 */
-	public Photo createPhoto(PhotoId myId, double mylandmarkHeight, int myyearOfManufacture, String mystate, Coordinate mycoordinate, double myadmissionPrice)  {
-		return new LandmarkPhoto(myId, mylandmarkHeight, myyearOfManufacture, mystate, mycoordinate, myadmissionPrice);
+	public Photo createPhoto(PhotoId myId, Landmark lm) {
+		return new LandmarkPhoto(myId, lm);
 	}
 }
